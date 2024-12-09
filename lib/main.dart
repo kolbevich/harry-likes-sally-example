@@ -54,7 +54,7 @@ class _MeetCuteHomeState extends State<MeetCuteHome> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Main',
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
