@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
+import 'package:harry_likes_sally_example/services/graphql_helper.dart';
 
 import '../test_users_data.dart';
 import 'auth_utils.dart';
@@ -11,14 +11,11 @@ class GraphQLRestClient {
   GraphQLRestClient(this.currentProfileCredentials);
 
   Future<GraphQLRestClient> initialize() async {
-    // or any of the other 2 methods provided in code snippets above
+    // or any of other 2 methods in auth_utils.dart
     final authToken = await getIdTokenFromEmailAndPassword(currentProfileCredentials);
 
-    // below is the basic example on how to create a GraphQL client
-
     final httpLink = HttpLink(
-      "https://meetcute.app/graphql",
-      // authorization in action,
+      "https://meet-cute-api.com/graphql",
       defaultHeaders: {'Authorization': 'Bearer $authToken'},
     );
 
@@ -30,40 +27,17 @@ class GraphQLRestClient {
     return (this);
   }
 
-  Future<void> ensureInitialized() async {
-    if (client == null) {
-      await initialize();
-    }
-  }
-
   Future<void> readAllNotifications() async {
-    await ensureInitialized();
-
-    final MutationOptions options = MutationOptions(
-      document: gql(
-        r'''
-        mutation ReadAllNotifications {
-          readAllNotifications {
-            success
-          }
-        }
-        ''',
-      ),
-    );
-
-    final QueryResult result = await client.mutate(options);
-
-    debugPrint('${result.data}');
+    await GraphQLHelper(client: client).markAllNotificationsAsRead();
   }
 
   Future<void> likePost(String postId) async {
-    await ensureInitialized();
-    // Add mutation logic here
+    await GraphQLHelper(client: client).likePost(postId);
   }
 
   Future<String> getLastPostId() async {
-    await ensureInitialized();
-    // Add query logic here
-    return ('12345');
+    final postId = await GraphQLHelper(client: client).getLastPostId();
+
+    return postId;
   }
 }

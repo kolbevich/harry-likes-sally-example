@@ -7,7 +7,7 @@ import '../screens.dart';
 
 extension TestExtension on PatrolIntegrationTester {
   Future<MainScreen> openMeetCuteApp() async {
-    await pumpWidget(const MeetCuteApp());
+    await pumpWidget(MeetCuteApp());
     for (var i = 0; i < (10); i++) {
       await pump(const Duration(seconds: 1));
     }

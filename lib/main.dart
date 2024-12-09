@@ -1,153 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:harry_likes_sally_example/firebase_options.dart';
+import 'package:harry_likes_sally_example/screens/main_screen.dart';
+import 'package:harry_likes_sally_example/screens/social_screen.dart';
 
-void main() {
-  runApp(const MeetCuteApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter bindings are initialized
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.ios,
+  ); // Initialize Firebase
+  runApp(MeetCuteApp());
 }
 
 class MeetCuteApp extends StatelessWidget {
-  const MeetCuteApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'MeetCute App',
+      title: 'MeetCute',
       theme: ThemeData(
-        primarySwatch: Colors.pink,
+        primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      home: MeetCuteHome(),
     );
   }
 }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
+class MeetCuteHome extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('MeetCute App'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              key: const Key('loginButton'),
-              onPressed: () {
-                // Handle login logic here
-              },
-              child: const Text('Login'),
-            ),
-            const SizedBox(height: 16), // Add spacing between buttons
-            ElevatedButton(
-              key: const Key('socialScreenButton'),
-              onPressed: () {
-                // Navigate to the SocialScreen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SocialScreen()),
-                );
-              },
-              child: const Text('Go to Social Screen'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  State<MeetCuteHome> createState() => _MeetCuteHomeState();
 }
 
-class NotificationScreen extends StatelessWidget {
-  const NotificationScreen({Key? key}) : super(key: key);
+class _MeetCuteHomeState extends State<MeetCuteHome> {
+  int _selectedIndex = 0;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notifications'),
-      ),
-      body: const Center(
-        child: Text('No notifications yet'),
-      ),
-    );
-  }
-}
+  final List<Widget> _screens = [
+    MainScreen(),
+    SocialScreen(),
+  ];
 
-class SocialScreen extends StatefulWidget {
-  const SocialScreen({Key? key}) : super(key: key);
-
-  @override
-  _SocialScreenState createState() => _SocialScreenState();
-}
-
-class _SocialScreenState extends State<SocialScreen> {
-  int unreadNotifications = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUnreadNotifications();
-  }
-
-  Future<int> getUnreadNotificationsCount() async {
-    // Simulate a network delay
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    // Return a mock unread notifications count
-    return 3;
-  }
-
-  Future<void> _loadUnreadNotifications() async {
-    final count = await getUnreadNotificationsCount();
+  void _onTabTapped(int index) {
     setState(() {
-      unreadNotifications = count;
+      _selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Social Screen'),
-      ),
-      body: Center(
-        child: Stack(
-          alignment: Alignment.topRight,
-          children: [
-            IconButton(
-              key: const Key('notificationButton'),
-              icon: const Icon(Icons.notifications),
-              onPressed: () {
-                // Navigate to NotificationScreen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const NotificationScreen()),
-                );
-              },
-            ),
-            if (unreadNotifications > 0)
-              Positioned(
-                right: 8,
-                top: 8,
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Text(
-                    key: const Key('notificationCounter'),
-                    unreadNotifications.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onTabTapped,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Main',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: 'Social',
+          ),
+        ],
       ),
     );
   }

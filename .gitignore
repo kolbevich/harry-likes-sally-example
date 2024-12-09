@@ -45,3 +45,7 @@ app.*.map.json
 /.metadata
 /ios/build
 /analysis_options.yaml
+/GoogleService-Info.plist
+/lib/firebase_options.dart
+/ios/Podfile.lock
+/ios/Runner/GoogleService-Info.plist
