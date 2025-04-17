@@ -6,7 +6,6 @@ import '../utils/graphQL_rest_client.dart';
 import '../utils/test_extension.dart';
 
 void main() {
-  // ignore: unused_element
   patrolSetUp() async {
     // API calls before test
     final sally = await GraphQLRestClient(sallyCredentials).initialize();
@@ -19,7 +18,7 @@ void main() {
   }
 
   patrolTest(
-    "When Sally, as a user of the MeetCute app",
+    "When Sally, as a user of the MeetCute app, receives a like from another user (Harry), she sees a dot with a counter appear on the notification button.",
     ($) async {
       // UI level interactions
       final mainScreen = await $.openMeetCuteApp();
